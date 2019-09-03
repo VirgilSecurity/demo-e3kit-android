@@ -21,6 +21,8 @@ class Device(val identity: String, val context: Context) {
 
     var eThree: EThree? = null
 
+    private val benchmarking = false
+
     fun _log(e: String) {
         log("[$identity] $e")
     }
@@ -174,14 +176,19 @@ class Device(val identity: String, val context: Context) {
     fun encrypt(text: String, lookupResult: LookupResult): String {
         val eThree = getEThreeInstance()
         var encryptedText = ""
+        var time: Long = 0
 
         try {
-            val time = measureTimeMillis {
-                //# start of snippet: e3kit_encrypt
-                encryptedText = eThree.encrypt(text, lookupResult)
-                //# end of snippet: e3kit_encrypt
+            val repetitions = if (benchmarking) 100 else 1
+            for (i in 1..repetitions) {
+                time += measureTimeMillis {
+                    //# start of snippet: e3kit_encrypt
+                    encryptedText = eThree.encrypt(text, lookupResult)
+                    //# end of snippet: e3kit_encrypt
+                }
             }
-            _log("Encrypted and signed: '$encryptedText'. Took: ${time}ms")
+
+            _log("Encrypted and signed: '$encryptedText'. Took: ${time/repetitions}ms")
         } catch(e: Throwable) {
             _log("Failed encrypting and signing: $e")
         }
@@ -192,14 +199,19 @@ class Device(val identity: String, val context: Context) {
     fun decrypt(text: String, senderPublicKey: VirgilPublicKey): String {
         val eThree = getEThreeInstance()
         var decryptedText = ""
+        var time: Long = 0
 
         try {
-            val time = measureTimeMillis {
-                //# start of snippet: e3kit_decrypt
-                decryptedText = eThree.decrypt(text, senderPublicKey)
-                //# end of snippet: e3kit_decrypt
+            val repetitions = if (benchmarking) 100 else 1
+            for (i in 1..repetitions) {
+                time += measureTimeMillis {
+                    //# start of snippet: e3kit_decrypt
+                    decryptedText = eThree.decrypt(text, senderPublicKey)
+                    //# end of snippet: e3kit_decrypt
+                }
+
             }
-            _log("Decrypted and verified: $decryptedText. Took: ${time}ms")
+            _log("Decrypted and verified: $decryptedText. Took: ${time/repetitions}ms")
         } catch(e: Throwable) {
             _log("Failed decrypting and verifying: $e")
         }
