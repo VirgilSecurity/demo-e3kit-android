@@ -4,9 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.StrictMode;
 import android.widget.TextView
-import com.virgilsecurity.android.common.data.model.LookupResult
 import android.text.method.ScrollingMovementMethod
-
+import com.virgilsecurity.android.common.model.LookupResult
 
 
 var log: ((String) -> Unit) = {};

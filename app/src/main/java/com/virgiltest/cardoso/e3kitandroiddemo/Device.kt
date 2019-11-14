@@ -1,11 +1,12 @@
 package com.virgiltest.cardoso.e3kitandroiddemo
 
 import android.content.Context
-import com.virgilsecurity.android.common.data.model.LookupResult
-import com.virgilsecurity.android.common.exceptions.RegistrationException
-
-import com.virgilsecurity.android.ethree.kotlin.interaction.*
-import com.virgilsecurity.android.ethree.kotlin.callback.*
+import com.virgilsecurity.android.common.callback.OnGetTokenCallback
+import com.virgilsecurity.android.common.exception.EThreeException
+import com.virgilsecurity.android.common.model.LookupResult
+import com.virgilsecurity.android.ethree.interaction.EThree
+import com.virgilsecurity.common.callback.OnCompleteListener
+import com.virgilsecurity.common.callback.OnResultListener
 import com.virgilsecurity.sdk.crypto.VirgilPublicKey
 
 import org.json.JSONException
@@ -138,7 +139,7 @@ class Device(val identity: String, val context: Context) {
             override fun onError(throwable: Throwable) {
                 _log("Failed registering: $throwable")
 
-                if (throwable is RegistrationException) {
+                if (throwable is EThreeException) {
                     if (eThree.hasLocalPrivateKey()) { eThree.cleanup() }
                     eThree.rotatePrivateKey().addCallback(object : OnCompleteListener {
                         override fun onSuccess() {
