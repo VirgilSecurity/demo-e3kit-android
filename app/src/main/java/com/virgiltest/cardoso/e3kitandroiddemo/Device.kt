@@ -3,11 +3,11 @@ package com.virgiltest.cardoso.e3kitandroiddemo
 import android.content.Context
 import com.virgilsecurity.android.common.callback.OnGetTokenCallback
 import com.virgilsecurity.android.common.exception.EThreeException
-import com.virgilsecurity.android.common.model.LookupResult
+import com.virgilsecurity.android.common.model.FindUsersResult
 import com.virgilsecurity.android.ethree.interaction.EThree
 import com.virgilsecurity.common.callback.OnCompleteListener
 import com.virgilsecurity.common.callback.OnResultListener
-import com.virgilsecurity.sdk.crypto.VirgilPublicKey
+import com.virgilsecurity.sdk.cards.Card
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -98,21 +98,16 @@ class Device(val identity: String, val context: Context) {
         val authToken = authenticate()
 
         //# start of snippet: e3kit_initialize
-        EThree.initialize(context, object : OnGetTokenCallback {
+        eThree = EThree(identity, object : OnGetTokenCallback {
             override fun onGetToken(): String {
                 return getVirgilJwt(authToken)
             }
-        }).addCallback(object : OnResultListener<EThree> {
-            override fun onSuccess(result: EThree) {
-                eThree = result
-                _log("Initialized")
-                callback()
-            }
-            override fun onError(throwable: Throwable) {
-                _log("Failed initializing: $throwable")
-            }
-        })
+        }, context)
         //# end of snippet: e3kit_initialize
+
+        _log("Initialized")
+
+        callback()
     }
 
     fun getEThreeInstance(): EThree {
@@ -157,12 +152,12 @@ class Device(val identity: String, val context: Context) {
         //# end of snippet: e3kit_register
     }
 
-    fun lookupPublicKeys(identities: List<String>, callback: (LookupResult) -> Unit) {
+    fun findUsers(identities: List<String>, callback: (FindUsersResult) -> Unit) {
         val eThree = getEThreeInstance()
 
-        //# start of snippet: e3kit_lookup_public_keys
-        eThree.lookupPublicKeys(identities).addCallback(object: OnResultListener<LookupResult> {
-            override fun onSuccess(result: LookupResult) {
+        //# start of snippet: e3kit_find_users
+        eThree.findUsers(identities).addCallback(object: OnResultListener<FindUsersResult> {
+            override fun onSuccess(result: FindUsersResult) {
                 _log("Looked up $identities's public key")
                 callback(result)
             }
@@ -171,10 +166,10 @@ class Device(val identity: String, val context: Context) {
                 _log("Failed looking up $identities's public key: $throwable")
             }
         })
-        //# end of snippet: e3kit_lookup_public_keys
+        //# end of snippet: e3kit_find_users
     }
 
-    fun encrypt(text: String, lookupResult: LookupResult): String {
+    fun encrypt(text: String, lookupResult: FindUsersResult): String {
         val eThree = getEThreeInstance()
         var encryptedText = ""
         var time: Long = 0
@@ -197,7 +192,7 @@ class Device(val identity: String, val context: Context) {
         return encryptedText
     }
 
-    fun decrypt(text: String, senderPublicKey: VirgilPublicKey): String {
+    fun decrypt(text: String, senderCard: Card): String {
         val eThree = getEThreeInstance()
         var decryptedText = ""
         var time: Long = 0
@@ -207,7 +202,7 @@ class Device(val identity: String, val context: Context) {
             for (i in 1..repetitions) {
                 time += measureTimeMillis {
                     //# start of snippet: e3kit_decrypt
-                    decryptedText = eThree.decrypt(text, senderPublicKey)
+                    decryptedText = eThree.decrypt(text, senderCard)
                     //# end of snippet: e3kit_decrypt
                 }
 

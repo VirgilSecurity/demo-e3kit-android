@@ -5,18 +5,18 @@ import android.os.Bundle
 import android.os.StrictMode;
 import android.widget.TextView
 import android.text.method.ScrollingMovementMethod
-import com.virgilsecurity.android.common.model.LookupResult
+import com.virgilsecurity.android.common.model.FindUsersResult
 
 
-var log: ((String) -> Unit) = {};
+var log: ((String) -> Unit) = {}
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var alice: Device
     lateinit var bob: Device
 
-    lateinit var bobLookup: LookupResult
-    lateinit var aliceLookup: LookupResult
+    lateinit var bobLookup: FindUsersResult
+    lateinit var aliceLookup: FindUsersResult
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,9 +74,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun lookupPublicKeys(callback: () -> Unit) {
-        alice.lookupPublicKeys(listOf(bob.identity)) { bobResult ->
+        alice.findUsers(listOf(bob.identity)) { bobResult ->
             bobLookup = bobResult
-            bob.lookupPublicKeys(listOf(alice.identity)) { aliceResult ->
+            bob.findUsers(listOf(alice.identity)) { aliceResult ->
                 aliceLookup = aliceResult
                 callback()
             }
