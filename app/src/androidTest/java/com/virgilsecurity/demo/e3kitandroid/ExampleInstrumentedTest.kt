@@ -1,4 +1,4 @@
-package com.virgiltest.cardoso.e3kitandroiddemo
+package com.virgilsecurity.demo.e3kitandroid
 
 import androidx.test.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getTargetContext()
-        assertEquals("com.virgiltest.cardoso.e3kitandroiddemo", appContext.packageName)
+        assertEquals("com.virgilsecurity.demo.e3kitandroid", appContext.packageName)
     }
 }

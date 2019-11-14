@@ -1,4 +1,4 @@
-package com.virgiltest.cardoso.e3kitandroiddemo
+package com.virgilsecurity.demo.e3kitandroid
 
 import org.junit.Test
 

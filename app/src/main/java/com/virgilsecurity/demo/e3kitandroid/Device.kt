@@ -1,4 +1,4 @@
-package com.virgiltest.cardoso.e3kitandroiddemo
+package com.virgilsecurity.demo.e3kitandroid
 
 import android.content.Context
 import com.virgilsecurity.android.common.callback.OnGetTokenCallback
