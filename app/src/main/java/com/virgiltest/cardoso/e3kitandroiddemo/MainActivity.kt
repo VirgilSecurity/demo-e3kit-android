@@ -1,12 +1,11 @@
 package com.virgiltest.cardoso.e3kitandroiddemo
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.StrictMode;
-import android.widget.TextView
-import com.virgilsecurity.android.common.data.model.LookupResult
+import android.os.StrictMode
 import android.text.method.ScrollingMovementMethod
-
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.virgilsecurity.android.common.model.FindUsersResult
 
 
 var log: ((String) -> Unit) = {};
@@ -16,8 +15,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var alice: Device
     lateinit var bob: Device
 
-    lateinit var bobLookup: LookupResult
-    lateinit var aliceLookup: LookupResult
+    lateinit var bobUsers: FindUsersResult
+    lateinit var aliceUsers: FindUsersResult
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,13 +46,13 @@ class MainActivity : AppCompatActivity() {
     fun main() {
         log("* Testing main methods:")
 
-        log("\n----- EThree.initialize -----")
+        log("\n----- Initialize EThree -----")
         initializeUsers {
             log("\n----- EThree.register -----")
             registerUsers {
-                log("\n----- EThree.lookupPublicKeys -----")
+                log("\n----- EThree.findUsers -----")
                 lookupPublicKeys {
-                    log("\n----- EThree.encrypt & EThree.decrypt -----")
+                    log("\n----- EThree.authEncrypt & EThree.authDecrypt -----")
                     encryptAndDecrypt {
 
                     }
@@ -75,21 +74,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun lookupPublicKeys(callback: () -> Unit) {
-        alice.lookupPublicKeys(listOf(bob.identity)) { bobResult ->
-            bobLookup = bobResult
-            bob.lookupPublicKeys(listOf(alice.identity)) { aliceResult ->
-                aliceLookup = aliceResult
+        alice.findUsers(listOf(bob.identity)) { bobResult ->
+            bobUsers = bobResult
+            bob.findUsers(listOf(alice.identity)) { aliceResult ->
+                aliceUsers = aliceResult
                 callback()
             }
         }
     }
 
     fun encryptAndDecrypt(callback: () -> Unit) {
-        val aliceEncryptedText = alice.encrypt("Hello ${bob.identity}!", bobLookup)
-        bob.decrypt(aliceEncryptedText, aliceLookup[alice.identity]!!)
+        val aliceEncryptedText = alice.encrypt("Hello ${bob.identity}!", bobUsers)
+        bob.decrypt(aliceEncryptedText, aliceUsers[alice.identity]!!)
 
-        val bobEncryptedText = bob.encrypt("Hello ${alice.identity}!", aliceLookup)
-        alice.decrypt(bobEncryptedText, bobLookup[bob.identity]!!)
+        val bobEncryptedText = bob.encrypt("Hello ${alice.identity}!", aliceUsers)
+        alice.decrypt(bobEncryptedText, bobUsers[bob.identity]!!)
     }
 
 
