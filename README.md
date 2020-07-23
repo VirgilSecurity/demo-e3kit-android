@@ -6,6 +6,7 @@
 Virgil E3Kit allows you to setup user encryption with multidevice support in just a few simple steps.
 
 > The demo is using E3Kit v2.0.4.
+
 > Note: It is a sample project and cannot be used in production.
 
 ## Prerequisites
