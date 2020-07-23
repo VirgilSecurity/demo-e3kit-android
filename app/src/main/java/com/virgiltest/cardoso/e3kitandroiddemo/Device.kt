@@ -1,12 +1,13 @@
 package com.virgiltest.cardoso.e3kitandroiddemo
 
 import android.content.Context
-import com.virgilsecurity.android.common.data.model.LookupResult
-import com.virgilsecurity.android.common.exceptions.RegistrationException
-
-import com.virgilsecurity.android.ethree.kotlin.interaction.*
-import com.virgilsecurity.android.ethree.kotlin.callback.*
-import com.virgilsecurity.sdk.crypto.VirgilPublicKey
+import com.virgilsecurity.android.common.exception.EThreeException
+import com.virgilsecurity.android.common.model.EThreeParams
+import com.virgilsecurity.android.common.model.FindUsersResult
+import com.virgilsecurity.android.ethree.interaction.EThree
+import com.virgilsecurity.common.callback.OnCompleteListener
+import com.virgilsecurity.common.callback.OnResultListener
+import com.virgilsecurity.sdk.cards.Card
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -51,9 +52,10 @@ class Device(val identity: String, val context: Context) {
 
             val httpResult = urlConnection.responseCode
             if (httpResult == HttpURLConnection.HTTP_OK) {
-                val response = InputStreamReader(urlConnection.inputStream, "UTF-8").buffered().use {
-                    it.readText()
-                }
+                val response =
+                    InputStreamReader(urlConnection.inputStream, "UTF-8").buffered().use {
+                        it.readText()
+                    }
 
                 val jsonObject = JSONObject(response)
 
@@ -77,9 +79,10 @@ class Device(val identity: String, val context: Context) {
 
                 val httpResult = urlConnection.responseCode
                 if (httpResult == HttpURLConnection.HTTP_OK) {
-                    val response = InputStreamReader(urlConnection.inputStream, "UTF-8").buffered().use {
-                        it.readText()
-                    }
+                    val response =
+                        InputStreamReader(urlConnection.inputStream, "UTF-8").buffered().use {
+                            it.readText()
+                        }
                     val jsonObject = JSONObject(response)
 
                     return jsonObject.getString("virgilToken")
@@ -97,20 +100,10 @@ class Device(val identity: String, val context: Context) {
         val authToken = authenticate()
 
         //# start of snippet: e3kit_initialize
-        EThree.initialize(context, object : OnGetTokenCallback {
-            override fun onGetToken(): String {
-                return getVirgilJwt(authToken)
-            }
-        }).addCallback(object : OnResultListener<EThree> {
-            override fun onSuccess(result: EThree) {
-                eThree = result
-                _log("Initialized")
-                callback()
-            }
-            override fun onError(throwable: Throwable) {
-                _log("Failed initializing: $throwable")
-            }
-        })
+        val eThreeParams = EThreeParams(identity, { getVirgilJwt(authToken) }, context)
+        eThree = EThree(eThreeParams)
+        _log("Initialized")
+        callback()
         //# end of snippet: e3kit_initialize
     }
 
@@ -138,8 +131,10 @@ class Device(val identity: String, val context: Context) {
             override fun onError(throwable: Throwable) {
                 _log("Failed registering: $throwable")
 
-                if (throwable is RegistrationException) {
-                    if (eThree.hasLocalPrivateKey()) { eThree.cleanup() }
+                if (throwable is EThreeException) {
+                    if (eThree.hasLocalPrivateKey()) {
+                        eThree.cleanup()
+                    }
                     eThree.rotatePrivateKey().addCallback(object : OnCompleteListener {
                         override fun onSuccess() {
                             _log("Rotated private key instead")
@@ -156,24 +151,25 @@ class Device(val identity: String, val context: Context) {
         //# end of snippet: e3kit_register
     }
 
-    fun lookupPublicKeys(identities: List<String>, callback: (LookupResult) -> Unit) {
+    fun findUsers(identities: List<String>, callback: (FindUsersResult) -> Unit) {
         val eThree = getEThreeInstance()
 
         //# start of snippet: e3kit_lookup_public_keys
-        eThree.lookupPublicKeys(identities).addCallback(object: OnResultListener<LookupResult> {
-            override fun onSuccess(result: LookupResult) {
-                _log("Looked up $identities's public key")
+        eThree.findUsers(identities).addCallback(object : OnResultListener<FindUsersResult> {
+            override fun onError(throwable: Throwable) {
+                _log("Failed finding user $identities: $throwable")
+            }
+
+            override fun onSuccess(result: FindUsersResult) {
+                _log("Found user $identities")
                 callback(result)
             }
 
-            override fun onError(throwable: Throwable) {
-                _log("Failed looking up $identities's public key: $throwable")
-            }
         })
         //# end of snippet: e3kit_lookup_public_keys
     }
 
-    fun encrypt(text: String, lookupResult: LookupResult): String {
+    fun encrypt(text: String, findUsersResult: FindUsersResult): String {
         val eThree = getEThreeInstance()
         var encryptedText = ""
         var time: Long = 0
@@ -183,20 +179,20 @@ class Device(val identity: String, val context: Context) {
             for (i in 1..repetitions) {
                 time += measureTimeMillis {
                     //# start of snippet: e3kit_encrypt
-                    encryptedText = eThree.encrypt(text, lookupResult)
+                    encryptedText = eThree.authEncrypt(text, findUsersResult)
                     //# end of snippet: e3kit_encrypt
                 }
             }
 
-            _log("Encrypted and signed: '$encryptedText'. Took: ${time/repetitions}ms")
-        } catch(e: Throwable) {
+            _log("Encrypted and signed: '$encryptedText'. Took: ${time / repetitions}ms")
+        } catch (e: Throwable) {
             _log("Failed encrypting and signing: $e")
         }
 
         return encryptedText
     }
 
-    fun decrypt(text: String, senderPublicKey: VirgilPublicKey): String {
+    fun decrypt(text: String, senderCard: Card): String {
         val eThree = getEThreeInstance()
         var decryptedText = ""
         var time: Long = 0
@@ -206,13 +202,13 @@ class Device(val identity: String, val context: Context) {
             for (i in 1..repetitions) {
                 time += measureTimeMillis {
                     //# start of snippet: e3kit_decrypt
-                    decryptedText = eThree.decrypt(text, senderPublicKey)
+                    decryptedText = eThree.authDecrypt(text, senderCard)
                     //# end of snippet: e3kit_decrypt
                 }
 
             }
-            _log("Decrypted and verified: $decryptedText. Took: ${time/repetitions}ms")
-        } catch(e: Throwable) {
+            _log("Decrypted and verified: $decryptedText. Took: ${time / repetitions}ms")
+        } catch (e: Throwable) {
             _log("Failed decrypting and verifying: $e")
         }
 
