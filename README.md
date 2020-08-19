@@ -19,9 +19,9 @@ Virgil E3Kit allows you to setup user encryption with multidevice support in jus
 
 1. Make sure the local backend is set up and running (you can find our Node.js sample [here](https://github.com/VirgilSecurity/sample-backend-nodejs)).
 2. In `Device.kt` file (path: `./demo-e3kit-android/app/src/main/java/com/virgiltest/cardoso/e3kitandroiddemo/Device.kt`), find the `val baseUrl = "http://10.0.2.2:3000/virgil-jwt"` value and change it to your backend URL (if you use our [sample backend](https://github.com/VirgilSecurity/sample-backend-nodejs), the URL will be `http://10.0.2.2:3000/virgil-jwt`).
-<img height="300px"  src="images/device_kt.png" alt="Device.kt file">
+<img height="300px"  src="img/device_kt.png" alt="Device.kt file">
 3. Build and run the Android Studio project in an Android emulator.
-<img height="300px"  src="images/run.png" alt="Build and run">
+<img height="300px"  src="img/run.png" alt="Build and run">
 
 ## Explore demo
 
@@ -32,8 +32,8 @@ This demo will automatically go through the following steps:
 4. **Encrypt and sign message**. Alice encrypts a message to Bob using Bob's public key, signs it using her private key, and sends it.
 5. **Decrypt and verify**. Bob receives the message, decrypts it using Bob's private key, and verifies it using Alice's public key.
 
-<img height="300px"  src="images/demo1.png" alt="Virgil E3Kit Android Demo">
-<img height="300px"  src="images/demo2.png" alt="Virgil E3Kit Android Demo">
+<img height="300px"  src="img/demo1.png" alt="Virgil E3Kit Android Demo">
+<img height="300px"  src="img/demo2.png" alt="Virgil E3Kit Android Demo">
 
 ## License
 
