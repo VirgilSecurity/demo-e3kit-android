@@ -18,7 +18,7 @@ Virgil E3Kit allows you to setup user encryption with multidevice support in jus
 ## Set up and run demo
 
 1. Make sure the local backend is set up and running ((you can find our Node.js sample [here](https://github.com/VirgilSecurity/sample-backend-nodejs).
-2. In `Device.kt` file (path: `./demo-e3kit-android/app/src/main/java/com/virgiltest/cardoso/e3kitandroiddemo/Device.kt`), find the `val baseUrl = "http://10.0.2.2:3000/virgil-jwt"` value and change it to your backend URL.
+2. In `Device.kt` file (path: `./demo-e3kit-android/app/src/main/java/com/virgiltest/cardoso/e3kitandroiddemo/Device.kt`), find the `val baseUrl = "http://10.0.2.2:3000/virgil-jwt"` value and change it to your backend URL (If you use our [sample backend](https://github.com/VirgilSecurity/sample-backend-nodejs) the URL will be `https://localhost:3000/virgil-jwt`).
 3. Build and run the Android Studio project in an Android emulator.
 
 ## Explore demo
