@@ -18,8 +18,10 @@ Virgil E3Kit allows you to setup user encryption with multidevice support in jus
 ## Set up and run demo
 
 1. Make sure the local backend is set up and running (you can find our Node.js sample [here](https://github.com/VirgilSecurity/sample-backend-nodejs)).
-2. In `Device.kt` file (path: `./demo-e3kit-android/app/src/main/java/com/virgiltest/cardoso/e3kitandroiddemo/Device.kt`), find the `val baseUrl = "http://10.0.2.2:3000/virgil-jwt"` value (it will be in two places) and change it to your backend URL (if you use our [sample backend](https://github.com/VirgilSecurity/sample-backend-nodejs), the URL will be `http://"YOUR-IP-ADRESS-HERE":3000/virgil-jwt`).
-<img src="img/device_kt.png" alt="Device.kt file">
+2. In `Device.kt` file (path: `./demo-e3kit-android/app/src/main/java/com/virgiltest/cardoso/e3kitandroiddemo/Device.kt`), find the `val baseUrl = "http://10.0.2.2:3000/virgil-jwt"` value (it will be in **two places**) and change it to your backend URL (if you use our [sample backend](https://github.com/VirgilSecurity/sample-backend-nodejs), the URL will be `http://"YOUR-IP-ADRESS-HERE":3000/virgil-jwt`).
+<img width="640px" src="img/authenticate.png" alt="Device.kt file">
+<img width="640px" src="img/jwt.png" alt="Device.kt file">
+
 3. Build and run the Android Studio project in an Android emulator.
 <img src="img/run.png" alt="Build and run">
 
@@ -44,4 +46,3 @@ Our developer support team is here to help you. Find out more information on our
 You can find us on [Twitter](https://twitter.com/VirgilSecurity) or send us email support@VirgilSecurity.com.
 
 Also, get extra help from our support team on [Slack](https://virgilsecurity.com/join-community).
-
