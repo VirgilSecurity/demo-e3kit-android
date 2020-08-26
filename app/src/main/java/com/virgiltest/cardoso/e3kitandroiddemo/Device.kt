@@ -32,7 +32,7 @@ class Device(val identity: String, val context: Context) {
 
         //# start of snippet: e3kit_authenticate
         fun authenticate(): String {
-            val baseUrl = "http://localhost:3000/"
+            val baseUrl = "http://10.0.2.2:3000/authenticate"
             val fullUrl = URL(baseUrl)
 
             val urlConnection = fullUrl.openConnection() as HttpURLConnection
