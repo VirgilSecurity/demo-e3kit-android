@@ -9,6 +9,8 @@ Virgil E3Kit allows you to setup user encryption with multidevice support in jus
 
 > Note: It is a sample project and cannot be used in production.
 
+We know your time is valuable, therefore if you want quickly to take a look at how Demo works you also [can watch the video](https://youtu.be/CWU8Rey52sY) we recorded for you on [our YouTube Channel](https://www.youtube.com/channel/UCU8BhA1nVzKKRiU5P4N3D6A/featured).
+
 ## Prerequisites
 
 - Android Studio
@@ -41,8 +43,11 @@ This demo will automatically go through the following steps:
 This library is released under the [3-clause BSD License](LICENSE).
 
 ## Support
+
 Our developer support team is here to help you. Find out more information on our [Help Center](https://help.virgilsecurity.com/).
 
 You can find us on [Twitter](https://twitter.com/VirgilSecurity) or send us email support@VirgilSecurity.com.
+
+Please don't forget to subscribe our [YouTube channel](https://www.youtube.com/channel/UCU8BhA1nVzKKRiU5P4N3D6A/featured)
 
 Also, get extra help from our support team on [Slack](https://virgilsecurity.com/join-community).
